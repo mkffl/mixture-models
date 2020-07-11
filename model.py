@@ -5,11 +5,12 @@ https://nbviewer.jupyter.org/github/krasserm/bayesian-machine-learning/blob/mast
 import numpy as np
 from scipy.stats import multivariate_normal as mvn
 from scipy.stats import poisson
-from wine_dataset import get_X_data_wine
+from data.make_wine_dataset import get_X_data_wine
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 from typing import Any, Tuple, Callable
+from plot_utils import aic, bic
 
 def e_step(likelihood: Callable) -> Callable:
     """ 
@@ -237,10 +238,11 @@ def train(X,
     print(f"Total restarts: {_}.")
     return mixture_params_best + (q_best, lb_best)
 
-
-if __name__ == "__main__":
+def run_gmm():
     X = get_X_data_wine().values
+    
     C = 2
+    
     pi_best, mu_best, sigma_best, q_best, lb_best = train(X, 
                                                     C, 
                                                     random_init_params_gaussian,
@@ -250,3 +252,11 @@ if __name__ == "__main__":
                                                     n_restarts=10)
 
     print(f'Lower bound = {lb_best:.2f}')
+    
+    print(f'BIC = {bic(lb_best, X.shape[1], C):.2f}')
+
+    print(f'AIC = {aic(lb_best, X.shape[1], C, X.shape[0]):.2f}')
+
+
+if __name__ == "__main__":
+    run_gmm()
