@@ -1,15 +1,22 @@
 '''
+Discrete mixture model functionalities used for the
+analyses in my blog articles on Expectation Maximization.
+https://mkffl.github.io/
+
+Code is from Martin Krasser's fantastic notebook on GMM.
+I only made it a bit more modular to add more distributions
+and wrote a few tests.
 https://nbviewer.jupyter.org/github/krasserm/bayesian-machine-learning/blob/master/latent_variable_models_part_1.ipynb
 '''
 
-import numpy as np
-from scipy.stats import multivariate_normal as mvn
-from scipy.stats import poisson
+from plot_utils import aic, bic
 from data.make_wine_dataset import get_X_data_wine
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plt
+from scipy.stats import poisson, multivariate_normal as mvn
 from typing import Any, Tuple, Callable
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+import numpy as np
 
 def e_step(likelihood: Callable) -> Callable:
     """ 
@@ -237,10 +244,11 @@ def train(X,
     print(f"Total restarts: {_}.")
     return mixture_params_best + (q_best, lb_best)
 
-
-if __name__ == "__main__":
+def run_gmm():
     X = get_X_data_wine().values
+    
     C = 2
+    
     pi_best, mu_best, sigma_best, q_best, lb_best = train(X, 
                                                     C, 
                                                     random_init_params_gaussian,
@@ -250,3 +258,11 @@ if __name__ == "__main__":
                                                     n_restarts=10)
 
     print(f'Lower bound = {lb_best:.2f}')
+    
+    print(f'BIC = {bic(lb_best, X.shape[1], C):.2f}')
+
+    print(f'AIC = {aic(lb_best, X.shape[1], C, X.shape[0]):.2f}')
+
+
+if __name__ == "__main__":
+    run_gmm()

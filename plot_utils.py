@@ -1,3 +1,51 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def n_parameters(D, C):
+    """Return the number of free parameters in the model."""  
+    cov_params = C * D * (D + 1) / 2.
+    
+    mean_params = D * C
+    
+    return int(cov_params + mean_params + C - 1)
+
+def aic(ll, D, C, N):
+    """Akaike information criterion for the current model on the input X.
+    Parameters
+    ----------
+    ll: log-likelihood
+    D: number of features
+    C: number of components
+    N: number of observations
+
+    Returns
+    -------
+    aic : float
+        The lower the better.
+    """
+    return -(2 * ll * N + 
+            2 * n_parameters(D, C))
+
+def bic(ll, D, C):
+    """
+    Bayesian information criterion for the current model on the input X.
+    Shamelessly taken from the sklearn source code.
+    https://github.com/scikit-learn/scikit-learn/blob/fd237278e/sklearn/mixture/_gaussian_mixture.py#L434
+
+    Parameters
+    ----------
+    ll: log-likelihood
+    D: number of features
+    C: number of components
+
+    Returns
+    -------
+    bic : float
+        The lower the better.
+    """
+    return (-2 * ll * D +
+            n_parameters(D, C) * np.log(D))
+
 def plot_data(X, scatter_color='grey', var1_name="Malic acid (g/l)", var2_name="Total phenols (g/l)"):
     plt.scatter(X[:,0], X[:,1], c=scatter_color, alpha=0.7)
     plt.xlabel(var1_name)
@@ -31,7 +79,6 @@ def plot_m_step(X, q, var1_name="malic_acid", var2_name="total_phenols"):
                         orientation="horizontal",
                         weights=q[:, 0])
 
-    #g.fig.suptitle('M-Step')
 
 def plot_e_step(X, mu, sigma, alpha=0.5, scatter_color='grey', contour_color=['#33052d', "#d996b9"]):
     plt.scatter(X[:,0], X[:,1], c=scatter_color, alpha=0.7)
@@ -50,4 +97,3 @@ def plot_e_step(X, mu, sigma, alpha=0.5, scatter_color='grey', contour_color=['#
         
         i += 1
     
-    #plt.suptitle('E-Step')
