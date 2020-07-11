@@ -5,7 +5,7 @@ https://nbviewer.jupyter.org/github/krasserm/bayesian-machine-learning/blob/mast
 import numpy as np
 from scipy.stats import multivariate_normal as mvn
 from scipy.stats import poisson
-from wine_dataset import get_X_data_wine
+from data.make_wine_dataset import get_X_data_wine
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
