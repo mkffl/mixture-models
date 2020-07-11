@@ -54,7 +54,7 @@ def poisson_likelihood(c: int, mixture_params: Tuple[Any], X: np.array) -> np.ar
     Returns the Poisson probability mass for X
     """
     lambda_param = mixture_params[1]
-    return poisson(lambda_param[c]).pmf(X)
+    return poisson(lambda_param[c]).pmf(X).flatten()
 
 def gaussian_likelihood(c: int, mixture_params: Tuple[Any], X: np.array) -> np.array:
     """
@@ -146,7 +146,7 @@ def lower_bound(likelihood):
         N, C = q.shape
         ll = np.zeros((N, C))
         
-        # Equation (19)
+        # Equation 2.2
         for c in range(C):
             ll[:,c] = np.log(likelihood(c, mixture_params, X))
         return np.sum(q * (ll + np.log(pi) - np.log(np.maximum(q, 1e-8))))
