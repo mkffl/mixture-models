@@ -1,6 +1,6 @@
 '''
 Discrete mixture model functionalities used for the
-analyses in my blog articles on Expectation Maximization.
+analyses in my blog posts on Expectation Maximization.
 https://mkffl.github.io/
 
 Code is from Martin Krasser's fantastic notebook on GMM.
