@@ -1,12 +1,16 @@
 '''
 Discrete mixture model functionalities used for the
-analyses in my blog articles on Expectation Maximization.
+analyses in my blog posts on Expectation Maximization.
 https://mkffl.github.io/
 
 Code is from Martin Krasser's fantastic notebook on GMM.
 I only made it a bit more modular to add more distributions
 and wrote a few tests.
 https://nbviewer.jupyter.org/github/krasserm/bayesian-machine-learning/blob/master/latent_variable_models_part_1.ipynb
+
+Notation warning: C and K are used interchangeably and 
+refer to the total number of components. I use K in the text
+and was too lazy to update the C notation in the code.
 '''
 
 from plot_utils import aic, bic
@@ -64,7 +68,7 @@ def gaussian_likelihood(c: int, mixture_params: Tuple[Any], X: np.array) -> np.a
     Args:
       c: Component index
       mixture_params: Distribution parameters i.e. prior proba, mean and variance
-      X: Observations
+      X: Observations (N, D).
     
     Returns:
          Gaussian probability density for X
@@ -110,14 +114,23 @@ def mixture_m_step_poisson(X: np.array, q: np.array, C: int, D: int) -> Tuple[np
     lambda_poisson = q.T.dot(X) / np.sum(q.T, axis=1, keepdims=True)
     return (lambda_poisson, )
 
-def mixture_m_step_gaussian(X, q, C, D):
-    # Equation (16)
-    sigma = np.zeros((C, D, D))
+def mixture_m_step_gaussian(X: np.array, q: np.array, C: int, D: int) -> Tuple[Any]:
+    """
+      M step solution for GMM parameters \mu and \sigma
+      i.e. equations 3.4 and 3.6
 
-    # Equation (17)
+      Args:
+        X: data (N, D).
+        q: posterior probabilities (N, C).
+
+      Returns:
+        the updated parameters.
+    """
+    # Equation 3.4
     mu = q.T.dot(X) / np.sum(q.T, axis=1, keepdims=True)
     
-    # Equation (18)
+    sigma = np.zeros((C, D, D))
+    # Equation 3.6
     for c in range(C):
         delta = (X - mu[c])
         sigma[c] = (q[:, [c]] * delta).T.dot(delta) / np.sum(q[:, c])
