@@ -7,6 +7,10 @@ Code is from Martin Krasser's fantastic notebook on GMM.
 I only made it a bit more modular to add more distributions
 and wrote a few tests.
 https://nbviewer.jupyter.org/github/krasserm/bayesian-machine-learning/blob/master/latent_variable_models_part_1.ipynb
+
+Notation warning: C and K are used interchangeably and 
+refer to the total number of components. I use K in the text
+and was too lazy to update the C notation in the code.
 '''
 
 from plot_utils import aic, bic
