@@ -155,6 +155,9 @@ def lower_bound(likelihood):
 def random_init_params(mixture_init_params):
     '''
         Initialise mixture distribution parameters.
+
+        \pi_c is initialised as 1/C i.e. components 
+        have the same prior probability to be drawn.
     '''
     def general_random_init_params(X, C):
         D = X.shape[1]
